@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace JupiterBroadcasting
+namespace JupiterBroadcastingAudio
 {
 	[XmlType(AnonymousType = true)]
 	[XmlRoot(Namespace = "", IsNullable = false)]

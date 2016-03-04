@@ -1,6 +1,6 @@
 ﻿using MediaBrowser.Model.Plugins;
 
-namespace JupiterBroadcasting.Configuration
+namespace JupiterBroadcastingAudio.Configuration
 {
 	public class PluginConfiguration : BasePluginConfiguration
 	{

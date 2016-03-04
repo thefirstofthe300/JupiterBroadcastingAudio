@@ -13,7 +13,7 @@ using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.MediaInfo;
 using MediaBrowser.Model.Serialization;
 
-namespace JupiterBroadcasting
+namespace JupiterBroadcastingAudio
 {
 	public class JupiterBroadcastingChannel : IChannel, ISupportsLatestMedia
 	{
@@ -109,7 +109,7 @@ namespace JupiterBroadcasting
 
 				MediaTypes = new List<ChannelMediaType>
 				{
-					ChannelMediaType.Video
+					ChannelMediaType.Audio
 				},
 
 				MaxPageSize = 100,
@@ -174,37 +174,34 @@ namespace JupiterBroadcasting
 			switch (query.FolderId)
 			{
 			case "faux":
-				baseurl = "http://www.jupiterbroadcasting.com/feeds/FauxShowHD.xml";
+				baseurl = "http://www.jupiterbroadcasting.com/feeds/FauxShowMP3.xml";
 				break;
 			case "scibyte":
-				baseurl = "http://feeds.feedburner.com/scibytehd";
+				baseurl = "http://feeds.feedburner.com/scibyteaudio";
 				break;
 			case "unfilter":
-				baseurl = "http://www.jupiterbroadcasting.com/feeds/unfilterHD.xml";
+				baseurl = "http://www.jupiterbroadcasting.com/feeds/unfilterMP3.xml";
 				break;
 			case "techsnap":
-				baseurl = "http://feeds.feedburner.com/techsnaphd";
-				break;
-			case "howto":
-				baseurl = "http://feeds.feedburner.com/HowtoLinuxHd";
+				baseurl = "http://feeds.feedburner.com/techsnapmp3";
 				break;
 			case "bsd":
-				baseurl = "http://feeds.feedburner.com/BsdNowHd";
+				baseurl = "http://feeds.feedburner.com/BsdNowMp3";
 				break;
 			case "las":
-				baseurl = "http://feeds.feedburner.com/linuxashd";
+				baseurl = "http://feeds2.feedburner.com/TheLinuxActionShow";
 				break;
             case "unplugged":
-                baseurl = "http://feeds.feedburner.com/linuxunvid";
+				baseurl = "http://feeds.feedburner.com/linuxunplugged";
                 break;
             case "coder":
-                baseurl = "http://feeds.feedburner.com/coderradiovideo";
+				baseurl = "http://feeds.feedburner.com/coderradiomp3";
                 break;
             case "techtalk":
-                baseurl = "http://feedpress.me/t3mob";
+				baseurl = "http://feedpress.me/t3mp3";
                 break;
             case "wtr":
-                baseurl = "http://feeds.feedburner.com/wtrmobile";
+				baseurl = "http://feeds.feedburner.com/wtrmp3";
                 break;
 			default:
 				throw new ArgumentException("FolderId was not what I expected: " + query.FolderId);
@@ -219,32 +216,13 @@ namespace JupiterBroadcasting
 			foreach (var podcast in podcasts.channel.item)
 			{
 				var mediaInfo = new List<ChannelMediaInfo>{};
-                if(query.FolderId == "coder" || query.FolderId == "unplugged" || query.FolderId == "techtalk" || query.FolderId == "wtr")
-				{
-                    mediaInfo.Add(new ChannelMediaInfo
-                    {
-                        Path = podcast.enclosure.url,
-                        Protocol = MediaProtocol.Http,
-                        Container = Container.MP4,
-                        AudioCodec = AudioCodec.AAC,
-                        VideoCodec = VideoCodec.H264,
-                        Width = 768,
-                        Height = 432
-                    });
-				}
-                else
+                
+                mediaInfo.Add(new ChannelMediaInfo
                 {
-                    mediaInfo.Add(new ChannelMediaInfo
-                    {
-                        Path = podcast.enclosure.url,
-                        Protocol = MediaProtocol.Http,
-                        Container = Container.MP4,
-                        AudioCodec = AudioCodec.AAC,
-                        VideoCodec = VideoCodec.H264,
-                        Width = 1200,
-                        Height = 720
-                    });
-                }
+                    Path = podcast.enclosure.url,
+                    Protocol = MediaProtocol.Http,
+					AudioCodec = AudioCodec.MP3,
+                });
 
                 long runtime;
 
@@ -272,9 +250,9 @@ namespace JupiterBroadcasting
                     items.Add(new ChannelItemInfo
                     {
                         ContentType = ChannelMediaContentType.Podcast,
-                        ImageUrl = "https://raw.githubusercontent.com/DaBungalow/MediaBrowser.Channels.JupiterBroadcasting/master/Resources/images/" + query.FolderId + ".jpg",
+							ImageUrl = GetType().Namespace + ".Resources.images." + query.FolderId + ".jpg",
                         IsInfiniteStream = true,
-                        MediaType = ChannelMediaType.Video,
+                        MediaType = ChannelMediaType.Audio,
                         MediaSources = mediaInfo,
                         RunTimeTicks = runtime,
                         Name = podcast.title,
@@ -292,9 +270,9 @@ namespace JupiterBroadcasting
                     items.Add(new ChannelItemInfo
                     {
                         ContentType = ChannelMediaContentType.Podcast,
-                        ImageUrl = "https://raw.githubusercontent.com/DaBungalow/MediaBrowser.Channels.JupiterBroadcasting/master/Resources/images/" + query.FolderId + ".jpg",
+						ImageUrl = GetType().Namespace + ".Resources.images." + query.FolderId + ".jpg",
                         IsInfiniteStream = true,
-                        MediaType = ChannelMediaType.Video,
+                        MediaType = ChannelMediaType.Audio,
                         MediaSources = mediaInfo,
                         Name = podcast.title,
                         Id = podcast.enclosure.url,
@@ -352,47 +330,43 @@ namespace JupiterBroadcasting
 		    var downloader = new JupiterChannelItemsDownloader(_logger, _xmlSerializer, _httpClient);
 
 			string baseurl = feedUrl;
-            string folderid;
+			string folderid;
 
-            switch (baseurl)
-            {
-                case "http://www.jupiterbroadcasting.com/feeds/FauxShowHD.xml":
-                    folderid = "faux";
-                    break;
-                case "http://feeds.feedburner.com/scibytehd":
-                    folderid = "scibyte";
-                    break;
-                case "http://www.jupiterbroadcasting.com/feeds/unfilterHD.xml":
-                    folderid = "unfilter";
-                    break;
-                case "http://feeds.feedburner.com/techsnaphd":
-                    folderid = "techsnap";
-                    break;
-                case "http://feeds.feedburner.com/HowtoLinuxHd":
-                    folderid = "howto";
-                    break;
-                case "http://feeds.feedburner.com/BsdNowHd":
-                    folderid = "bsd";
-                    break;
-                case "http://feeds.feedburner.com/linuxashd":
-                    folderid = "las";
-                    break;
-                case "http://feeds.feedburner.com/linuxunvid":
-                    folderid = "unplugged";
-                    break;
-                case "http://feeds.feedburner.com/coderradiovideo":
-                    folderid = "coder";
-                    break;
-                case "http://feedpress.me/t3mob":
-                    folderid = "techtalk";
-                    break;
-                case "http://feeds.feedburner.com/wtrmobile":
-                    folderid = "wtr";
-                    break;
-                default:
-                    folderid = "jupiterbroadcasting";
-                    break;
-            }
+			switch (baseurl)
+			{
+			case "http://www.jupiterbroadcasting.com/feeds/FauxShowMP3.xml":
+				folderid = "faux";
+				break;
+			case "http://feeds.feedburner.com/scibyteaudio":
+				folderid = "scibyte";
+				break;
+			case "http://www.jupiterbroadcasting.com/feeds/unfilterMP3.xml":
+				folderid = "unfilter";
+				break;
+			case "http://feeds.feedburner.com/techsnapmp3":
+				folderid = "techsnap";
+				break;
+			case "http://feeds.feedburner.com/BsdNowMp3":
+				folderid = "bsd";
+				break;
+			case "http://feeds2.feedburner.com/TheLinuxActionShow":
+				folderid = "las";
+				break;
+			case "http://feeds.feedburner.com/linuxunplugged":
+				folderid = "unplugged";
+				break;
+			case "http://feeds.feedburner.com/coderradiomp3":
+				folderid = "coder";
+				break;
+			case "http://feedpress.me/t3mp3":
+				folderid = "techtalk";
+				break;
+			case "http://feeds.feedburner.com/wtrmp3":
+				folderid = "wtr";
+				break;
+			default:
+				throw new ArgumentException("Baseurl was not what I expected: " + baseurl);
+			}
 
 			var podcasts = await downloader.GetStreamList(baseurl, offset, cancellationToken).ConfigureAwait(false);
 
@@ -403,36 +377,13 @@ namespace JupiterBroadcasting
 			foreach (var podcast in podcasts.channel.item)
 			{
 				var mediaInfo = new List<ChannelMediaInfo>{};
-                if (baseurl == "http://feeds.feedburner.com/coderradiovideo" ||
-                    baseurl == "http://feeds.feedburner.com/linuxunvid" ||
-                    baseurl == "http://feedpress.me/t3mob" ||
-                    baseurl == "http://feeds.feedburner.com/wtrmobile")
-				{
-                    mediaInfo.Add(new ChannelMediaInfo
-                    {
-                        Path = podcast.enclosure.url,
-                        Protocol = MediaProtocol.Http,
-                        Container = Container.MP4,
-                        AudioCodec = AudioCodec.AAC,
-                        VideoCodec = VideoCodec.H264,
-                        Width = 768,
-                        Height = 432
-                    });
-				}
-                else
+              
+            	mediaInfo.Add(new ChannelMediaInfo
                 {
-                    mediaInfo.Add(new ChannelMediaInfo
-                    {
-
-                        Path = podcast.enclosure.url,
-                        Protocol = MediaProtocol.Http,
-                        Container = Container.MP4,
-                        AudioCodec = AudioCodec.AAC,
-                        VideoCodec = VideoCodec.H264,
-                        Width = 1200,
-                        Height = 720
-                    });
-                }
+                    Path = podcast.enclosure.url,
+                    Protocol = MediaProtocol.Http,
+					AudioCodec = AudioCodec.MP3
+                });
 
                 long runtime;
 
@@ -460,9 +411,9 @@ namespace JupiterBroadcasting
                     items.Add(new ChannelItemInfo
                     {
                         ContentType = ChannelMediaContentType.Podcast,
-                        ImageUrl = "https://raw.githubusercontent.com/DaBungalow/MediaBrowser.Channels.JupiterBroadcasting/master/Resources/images/" + folderid + ".jpg",
-                        IsInfiniteStream = true,
-                        MediaType = ChannelMediaType.Video,
+						ImageUrl = GetType().Namespace + ".Resources.images." + folderid + ".jpg",
+                    	IsInfiniteStream = true,
+						MediaType = ChannelMediaType.Audio,
                         MediaSources = mediaInfo,
                         RunTimeTicks = runtime,
                         Name = podcast.title,
@@ -480,9 +431,9 @@ namespace JupiterBroadcasting
                     items.Add(new ChannelItemInfo
                     {
                         ContentType = ChannelMediaContentType.Podcast,
-                        ImageUrl = "https://raw.githubusercontent.com/DaBungalow/MediaBrowser.Channels.JupiterBroadcasting/master/Resources/images/" + folderid + ".jpg",
+							ImageUrl = GetType().Namespace + ".Resources.images." + folderid + ".jpg",
                         IsInfiniteStream = true,
-                        MediaType = ChannelMediaType.Video,
+						MediaType = ChannelMediaType.Audio,
                         MediaSources = mediaInfo,
                         Name = podcast.title,
                         Id = podcast.enclosure.url,
@@ -495,7 +446,7 @@ namespace JupiterBroadcasting
                     });
                 }
             }
-            return items;
+			return items;
         }
 
         private async Task<ChannelItemResult> GetAllMedia(InternalAllChannelMediaQuery query, CancellationToken cancellationToken)
@@ -506,17 +457,17 @@ namespace JupiterBroadcasting
             }
 
             string[] urls = {
-                "http://www.jupiterbroadcasting.com/feeds/FauxShowHD.xml",
-                "http://feeds.feedburner.com/scibytehd",
-                "http://www.jupiterbroadcasting.com/feeds/unfilterHD.xml",
+				"http://www.jupiterbroadcasting.com/feeds/FauxShowMP3.xml",
+				"http://feeds.feedburner.com/scibyteaudio",
+				"http://www.jupiterbroadcasting.com/feeds/unfilterMP3.xml",
                 "http://feeds.feedburner.com/techsnaphd",
-                "http://feeds.feedburner.com/HowtoLinuxHd",
-                "http://feeds.feedburner.com/BsdNowHd",
-                "http://feeds.feedburner.com/linuxashd",
-                "http://feeds.feedburner.com/linuxunvid",
-                "http://feeds.feedburner.com/coderradiovideo",
-                "http://feedpress.me/t3mob",
-                "http://feeds.feedburner.com/wtrmobile"
+				"http://feeds.feedburner.com/techsnapmp3",
+				"http://feeds.feedburner.com/BsdNowMp3",
+				"http://feeds2.feedburner.com/TheLinuxActionShow",
+				"http://feeds.feedburner.com/linuxunplugged",
+				"http://feeds.feedburner.com/coderradiomp3",
+				"http://feedpress.me/t3mp3",
+				"http://feeds.feedburner.com/wtrmp3"
             };
 
             var tasks = urls.Select(async i =>

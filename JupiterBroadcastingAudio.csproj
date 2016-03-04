@@ -5,23 +5,28 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1D20F4AB-81E5-4ABB-B1F6-7A2CDAA9E394}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MediaBrowser.Channels.JupiterBroadcasting</RootNamespace>
-    <AssemblyName>MediaBrowser.Channels.JupiterBroadcasting</AssemblyName>
+    <RootNamespace>JupiterBroadcasting</RootNamespace>
+    <AssemblyName>JupiterBroadcasting</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\var\lib\docker-config\emby-server-beta\plugins</OutputPath>
+    <OutputPath>obj</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="cp ${TargetFile} /home/dansey/Projects/emby-plugins/" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\var\lib\docker-config\emby-server-beta\plugins</OutputPath>
+    <OutputPath>obj\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -56,7 +61,7 @@
   <ItemGroup>
     <None Include="Resources\images\howto.jpg" />
     <None Include="packages.config" />
-    <None Include="JupiterBroadcasting.sln" />
+    <None Include="JupiterBroadcastingAudio.sln" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\images\wtr.jpg" />

@@ -5,7 +5,7 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Model.Logging;
 using MediaBrowser.Model.Serialization;
 
-namespace JupiterBroadcasting
+namespace JupiterBroadcastingAudio
 {
 	public class JupiterChannelItemsDownloader
 	{

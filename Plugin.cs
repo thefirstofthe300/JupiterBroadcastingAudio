@@ -1,9 +1,9 @@
 ﻿using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Model.Serialization;
-using MediaBrowser.Channels.JupiterBroadcasting.Configuration;
+using JupiterBroadcastingAudio.Configuration;
 
-namespace JupiterBroadcasting
+namespace JupiterBroadcastingAudio
 {
 	public class Plugin : BasePlugin<PluginConfiguration>
 	{
